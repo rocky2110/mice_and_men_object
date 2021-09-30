@@ -28,7 +28,4 @@ public class PropertiesUtil {
         return Integer.parseInt(getProperty(fileName).getProperty(key));
     }
 
-    public static String getValueFormattedString(String fileName, String key, Object[] obj) {
-        return MessageFormat.format(getProperty(fileName).getProperty(key), obj);
-    }
 }
