@@ -3,10 +3,11 @@ package Logic;
 import constraint.MessageConstraint;
 import display.DisplayManger;
 import player.Player;
+import player.PlayerComputer;
+import player.PlayerYou;
 import util.PropertiesUtil;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Logic extends BaseLogic implements MessageConstraint {
@@ -17,6 +18,9 @@ public class Logic extends BaseLogic implements MessageConstraint {
     private ArrayList<Player> players = new ArrayList();
     private int counter = 0;
     private boolean gameContinued = true;
+
+    private String playerNameYou = PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.you");
+    private String playerNameComputer = PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.computer");
 
     public Logic() {
         displayManger = new DisplayManger();
@@ -51,14 +55,15 @@ public class Logic extends BaseLogic implements MessageConstraint {
         displayManger.startGame();
 
         for (int i = 0; i < playerNumber; i++) {
-            String playerName = "";
             if (i == playerNumber - 1) {
-                playerName = PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.you");
+                String playerName = playerNameYou;
+                PlayerYou player = new PlayerYou(playerName, displayManger, scan);
+                players.add(player);
             } else {
-                playerName = PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.computer") + (i + 1);
+                String playerName = playerNameComputer + (i + 1);
+                PlayerComputer computerPlayer = new PlayerComputer(playerName, displayManger, scan);
+                players.add(computerPlayer);
             }
-            Player player = new Player(playerName, displayManger, scan);
-            players.add(player);
         }
     }
 
@@ -77,7 +82,7 @@ public class Logic extends BaseLogic implements MessageConstraint {
 
         // プレーヤーが戦略を選択する。その結果によって、プレーヤーのチップ数が変化する。
         for (Player player : players) {
-            if (player.getPlayerName().equals(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.you"))){
+            if (player instanceof PlayerYou){
                 // ★★★あなたの番です。宣言を選択してください。★★★
                 displayManger.askWhichStrategyChoose();
                 // ①[Run with the rat.]ネズミと一緒に逃げる。ラウンドから降りる。失点1点。
@@ -85,23 +90,26 @@ public class Logic extends BaseLogic implements MessageConstraint {
                 //    ③[Lead the men.]男たちを率いる。失点値を増やす。他のプレイヤーは同意するかを選択する。
                 displayManger.showStrategyOption();
 
-                // あなたの場合だけ、input させる。
-                player.inputStrategyNumber();
+                // あなたの場合だけ、戦略をコンソールから入力させる。
+                player.selectStrategy();
+            } else if (player instanceof PlayerComputer){
+                // ~ が宣言しました
+                displayManger.showPlayerDeclare(player.getPlayerName());
+                player.selectStrategy();
             }
-            // ~ が宣言しました
-            displayManger.showPlayerDeclare(player.getPlayerName());
-            player.selectStrategy();
 
             // press enter
-            showPressEnter();
+            player.showPressEnter();
+
+            // それぞれのプレーヤーが選択した戦略に応じた処理を実装する。
+            // まず仕様を抑えよう。
         }
+
+
+
         // 誰かのチップが 0 枚になったら gameContinued を false にしてあげれば良い。
     }
 
-    private void showPressEnter() {
-        displayManger.showPressEnter();
-        scan.nextLine();
-    }
 
     @Override
     void finish() {

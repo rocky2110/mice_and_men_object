@@ -68,4 +68,7 @@ public class DisplayManger implements MessageConstraint {
         System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.on.play.press.enter"));
     }
 
+    public void showNoSuchStrategy() {
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.no.such.strategy"));
+    }
 }
