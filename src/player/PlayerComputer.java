@@ -15,8 +15,7 @@ public class PlayerComputer extends Player {
         super(playerName, displayManger, scan);
     }
 
-    @Override
-    public void showPlayerDiceNumber() {
+    public void showComputerPlayerSecretDiceNumber() {
         System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.first.line"));
         System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.secret.second.line"));
         System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.third.line"));
@@ -25,36 +24,25 @@ public class PlayerComputer extends Player {
     @Override
     public void selectStrategy() {
         int computerStrategy = selectComputerStrategy();
-        showComputerStrategy(computerStrategy);
         playerStrategy = computerStrategy;
+    }
+
+    @Override
+    public void decideRemainInPlay() {
+        int random = rand.nextInt(getValueInt(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "computer.option"));
+        if (random == getValueInt(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "computer.option.yes")) {
+            // 乱数で 0 が出ればフィールドに残る
+            displayManger.showDecideRemainInPlay(playerName);
+            setOnField(true);
+        } else if (random == getValueInt(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "computer.option.no")) {
+            // 乱数で 1 が出ればフィールドから降りる
+            displayManger.showDecideNotRemainInPlay(playerName);
+            setOnField(false);
+        }
     }
 
     private int selectComputerStrategy() {
         return rand.nextInt(getValueInt(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.max.number")) + 1;
     }
 
-    private void showComputerStrategy(int computerStrategy) {
-        switch (computerStrategy) {
-            case strategyOne:
-                displayManger.showStrategy(
-                        PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.one.title"),
-                        PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.one.detail")
-                );
-                break;
-            case strategyTwo:
-                displayManger.showStrategy(
-                        PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.two.title"),
-                        PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.two.detail")
-                );
-                break;
-            case strategyThree:
-                displayManger.showStrategy(
-                        PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.three.title"),
-                        PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.three.detail")
-                );
-                break;
-            default:
-                displayManger.showComputerStrategyNumberError();
-        }
-    }
 }

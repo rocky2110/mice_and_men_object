@@ -15,27 +15,36 @@ public class PlayerYou extends Player {
     }
 
     @Override
-    public void showPlayerDiceNumber() {
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.first.line"));
-        System.out.println("| " + firstDiceNumber + " |  " + "| " + secondDiceNumber + " |  " + "| " + thirdDiceNumber + " |");
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.third.line"));
+    public void selectStrategy() {
+        try {
+            int strategyNumber = scan.nextInt();
+            if (validatePlayerNumber(strategyNumber)) {
+                playerStrategy = strategyNumber;
+            } else {
+                playerStrategy = strategyOne;
+                displayManger.showNoSuchStrategy();
+            }
+        } catch (InputMismatchException e) {
+            displayManger.showComputerStrategyNumberError();
+            playerStrategy = strategyOne;
+        }
     }
 
     @Override
-    public void selectStrategy() {
-        boolean validationNotClear = true;
-        while (validationNotClear) {
-            try {
-                int strategyNumber = scan.nextInt();
-                if (validatePlayerNumber(strategyNumber)) {
-                    validationNotClear = false;
-                    playerStrategy = strategyNumber;
-                } else {
-                    displayManger.showNoSuchStrategy();
-                }
-            } catch (InputMismatchException e) {
-                displayManger.showComputerStrategyNumberError();
+    public void decideRemainInPlay() {
+        displayManger.askRemainInPlay();
+        try {
+            String input = scan.next().toLowerCase();
+            if (input.equals("y") || input.equals("yes")) {
+                setOnField(true);
+                displayManger.showDecideRemainInPlay(playerName);
+            } else if (input.equals("n") || input.equals("no")){
+                setOnField(false);
+                displayManger.showDecideNotRemainInPlay(playerName);
             }
+        } catch (InputMismatchException e) {
+            displayManger.showInputError();
+            setOnField(false);
         }
     }
 

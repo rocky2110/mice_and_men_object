@@ -1,6 +1,8 @@
 package player;
 
+import constraint.MessageConstraint;
 import display.DisplayManger;
+import util.PropertiesUtil;
 
 import java.util.Random;
 import java.util.Scanner;
@@ -17,10 +19,11 @@ public abstract class Player {
     protected int thirdDiceNumber;
     protected int playerTip = 5;
     protected int playerStrategy;
+    protected boolean isOnField = true;
 
-    protected final int strategyOne = 1;
-    protected final int strategyTwo = 2;
-    protected final int strategyThree = 3;
+    public final int strategyOne = 1;
+    public final int strategyTwo = 2;
+    public final int strategyThree = 3;
 
     public Player(String playerName, DisplayManger displayManger, Scanner scan) {
         this.playerName = playerName;
@@ -28,8 +31,15 @@ public abstract class Player {
         this.scan = scan;
     }
 
+    public abstract void selectStrategy();
+    public abstract void decideRemainInPlay();
+
     public String getPlayerName() {
         return playerName;
+    }
+
+    public int getPlayerStrategy() {
+        return playerStrategy;
     }
 
     public void throwThreeDice() {
@@ -38,14 +48,36 @@ public abstract class Player {
         thirdDiceNumber = rand.nextInt(6) + 1;
     }
 
-    public void showPressEnter() {
-        displayManger.showPressEnter();
-        scan.nextLine();
+    public int getPlayerTip() {
+        return playerTip;
     }
 
-    public abstract void showPlayerDiceNumber();
+    public void showPlayerDiceNumber() {
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.first.line"));
+        System.out.println("| " + firstDiceNumber + " |  " + "| " + secondDiceNumber + " |  " + "| " + thirdDiceNumber + " |");
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.third.line"));
+    }
 
-    public abstract void selectStrategy();
+    public void showPlayerDiceNumberWithPlayerName(String playerName) {
+        System.out.println(playerName);
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.first.line"));
+        System.out.println("| " + firstDiceNumber + " |  " + "| " + secondDiceNumber + " |  " + "| " + thirdDiceNumber + " |");
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.dice.number.third.line"));
+    }
 
+    public void subtractionTip(int subtractionOne) {
+        playerTip -= subtractionOne;
+    }
 
+    public void setOnField(boolean it) {
+        isOnField = it;
+    }
+
+    public boolean isOnField() {
+        return isOnField;
+    }
+
+    public void showPlayerTip() {
+        System.out.println(playerName + "  →  " + playerTip + "枚");
+    }
 }

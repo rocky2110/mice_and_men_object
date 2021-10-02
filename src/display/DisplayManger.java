@@ -1,5 +1,6 @@
 package display;
 
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import constraint.MessageConstraint;
 import util.PropertiesUtil;
 
@@ -45,10 +46,6 @@ public class DisplayManger implements MessageConstraint {
         );
     }
 
-    public void showStrategy(String strategyTitle, String strategyDetail) {
-        System.out.println(strategyTitle);
-        System.out.println(strategyDetail);
-    }
 
     public void showComputerStrategyNumberError() {
         System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.number.error"));
@@ -70,5 +67,53 @@ public class DisplayManger implements MessageConstraint {
 
     public void showNoSuchStrategy() {
         System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.no.such.strategy"));
+    }
+
+    public void showPlayerOrder(int order, String playerName) {
+        System.out.println(order
+                + PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.order")
+                + playerName);
+    }
+
+    public void showPlayerSelectStrategyOne() {
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "result.strategy.one"));
+    }
+
+    public void showPlayerSelectStrategyTwo() {
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "result.strategy.two"));
+    }
+
+    public void showPlayerSelectStrategyThree() {
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "result.strategy.three"));
+    }
+
+    public void showLoserLoseTipNumber(int tip) {
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.loser.lost.tip.number"));
+        System.out.print(tip);
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.loser.lost.tip.number.end.of.line"));
+    }
+
+    public void showDecideRemainInPlay(String playerName) {
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play.decoration"));
+        System.out.print(playerName);
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play.decoration"));
+        System.out.println("");
+    }
+
+    public void showDecideNotRemainInPlay(String playerName) {
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play.decoration"));
+        System.out.print(playerName);
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.not.remain.in.play"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play.decoration"));
+        System.out.println("");
+    }
+
+    public void showInputError() {
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.input.string.error"));
+    }
+
+    public void askRemainInPlay() {
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "mag.ask.input"));
     }
 }
