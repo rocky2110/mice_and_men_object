@@ -116,4 +116,12 @@ public class DisplayManger implements MessageConstraint {
     public void askRemainInPlay() {
         System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "mag.ask.input"));
     }
+
+    public void showChampionThisRound(int counter, String playerName) {
+        System.out.println(counter + "ラウンドは" + playerName + "が勝利しました！！");
+    }
+
+    public void showPlayerScore(String playerName, int playerScore) {
+        System.out.println(playerName + "得点 -> " + playerScore);
+    }
 }

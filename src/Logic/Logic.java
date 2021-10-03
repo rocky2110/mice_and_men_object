@@ -7,8 +7,7 @@ import player.PlayerComputer;
 import player.PlayerYou;
 import util.PropertiesUtil;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Logic extends BaseLogic implements MessageConstraint {
 
@@ -73,8 +72,8 @@ public class Logic extends BaseLogic implements MessageConstraint {
     void processLoop() {
         counter++;
         displayManger.showGameRound(counter);
-        // ここでプレイヤーがそれぞれサイコロをふる
-        // プレーヤーのダイスをそれぞれ表示する
+        ArrayList<Player> playersOnField = new ArrayList<>();
+        HashMap<Player, Integer> playersScoreMap = new HashMap<>();
         for (Player player : players) {
             player.throwThreeDice();
             displayManger.showDiceThrowed(player.getPlayerName());
@@ -84,60 +83,36 @@ public class Logic extends BaseLogic implements MessageConstraint {
                 player.showPlayerDiceNumber();
             }
         }
-
-
-        // プレーヤーが戦略を選択する。
-        // 戦略に従った実装をする。戦略によってはその場で他のプレーヤーが場に残るか否かを決める。
         for (Player player : players) {
-            if (player instanceof PlayerYou) {
-                displayManger.askWhichStrategyChoose();
-                displayManger.showStrategyOption();
-                player.selectStrategy();
-            } else if (player instanceof PlayerComputer) {
-                player.selectStrategy();
-            }
-            // press enter
-            showPressEnter();
-
-            // ☆☆☆ 〜 が宣言しました。 ☆☆☆
-            displayManger.showPlayerDeclare(player.getPlayerName());
-            displayManger.showLoserLoseTipNumber(tip);
-
             if (player.isOnField()) {
+                if (player instanceof PlayerYou) {
+                    displayManger.askWhichStrategyChoose();
+                    displayManger.showStrategyOption();
+                    player.selectStrategy();
+                } else if (player instanceof PlayerComputer) {
+                    player.selectStrategy();
+                }
+                showPressEnter();
+                displayManger.showPlayerDeclare(player.getPlayerName());
+                displayManger.showLoserLoseTipNumber(tip);
+
                 if (player.getPlayerStrategy() == player.strategyOne) {
-                    // □①ネズミと一緒に逃げる。ラウンドから降りました。失点1点が確定しました。□
                     displayManger.showPlayerSelectStrategyOne();
-                    // 持ちチップが -1 になる
                     player.subtractionTip(1);
-                    // ラウンドから去る
                     player.setOnField(false);
                 }
 
-                // プレーヤーが 2 を選択していた場合
                 else if (player.getPlayerStrategy() == player.strategyTwo) {
-                    // ■②男たちに加わる。失点値を増やさずににラウンドに残りました。■
                     displayManger.showPlayerSelectStrategyTwo();
                 }
 
-                // プレーヤーが 3 を選択していた場合
                 else if (player.getPlayerStrategy() == player.strategyThree) {
-                    // ■③男たちを率いる。失点値を増やします。他のプレイヤーは同意するかを選択します。■
                     displayManger.showPlayerSelectStrategyThree();
-                    // ゲームにおける負けた時に失うチップの数を増やす
                     tip++;
-                    // 負けた時に失うチップ枚数 x 枚を出力
                     displayManger.showLoserLoseTipNumber(tip);
-
-                    // プレーヤー全てに降りるかどうか選択させる。すでに降りているプレーヤには聞かない。
-                    // 3 人のプレーヤーがいた場合を考えてみよう
-                    // 1人目が 3 を選択した場合。この場で降りるか残るかを選択することになる。
-                    // と言うことは、この一個外のループでは2人目は戦略にかかわらず降りることになる。
-                    // そのため、一個外のループで常に最初に場に残っているかどうかをチェックする必要がある。
-                    // 選択したプレーヤーは除く。
                     for (Player reLoopPlayer : players) {
                         if (reLoopPlayer.isOnField() && !(player == reLoopPlayer)) {
                             reLoopPlayer.decideRemainInPlay();
-                            showPressEnter();
                         }
                     }
                 }
@@ -145,24 +120,63 @@ public class Logic extends BaseLogic implements MessageConstraint {
         }
 
 
-        // 全員のダイスを見せる
+        // 全員のダイスを出力する
         for (Player player : players) {
             player.showPlayerDiceNumberWithPlayerName(player.getPlayerName());
+            // ラウンドに残っているプレーヤを配列に保存する
+            if (player.isOnField()) {
+                playersOnField.add(player);
+            }
         }
-        // 残っているプレーヤーの出目を比較して勝敗を決定する。
-        // player をもう一度ループで回し、ラウンドに残っているプレーヤーが一人ならその時点で強制的にその人が勝利とする。
-        // todo それぞれのプレーヤーの得点をソートして表示する。
+
+        // ラウンドに残っているプレーヤーが 1 人だったら、その人が勝者になる。
+        if (playersOnField.size() == 1) {
+            displayManger.showChampionThisRound(counter, playersOnField.get(0).getPlayerName());
+            playersOnField.get(0).addTip(tip);
+        } else if (playersOnField.size() >= 2) {
+            // ラウンドに残っているプレーヤーが 2 人以上だったら、3桁の数字にし、比較して勝者を決定する
+            // それぞれのプレーヤーの3桁の数字を int にして得点とする
+            for (Player player : playersOnField) {
+                // プレーヤのインスタンスと得点を Hashmap にぶち込んでおく。
+                int playerScore = player.getPlayerScore();
+                playersScoreMap.put(player, playerScore);
+                displayManger.showPlayerScore(player.getPlayerName(), playerScore);
+            }
+            // hash map の int playerScore で昇順にソートして、1番上にいるプレーヤー名を出力して勝者とする。
+            List<Map.Entry<Player, Integer>> list = new ArrayList<>(playersScoreMap.entrySet());
+            list.sort(Map.Entry.comparingByValue());
+            displayManger.showChampionThisRound(counter, list.get(list.size() - 1).getKey().getPlayerName());
+            list.get(list.size() - 1).getKey().addTip(tip);
+            // 負けたプレーヤーは 負けた時に失うチップ枚数分チップ数が減る。
+            for (int i = 0 ; i < list.size() - 1 ; i++) {
+                list.get(i).getKey().subtractionTip(tip);
+            }
+        }
+
+
         for (Player player : players) {
             player.showPlayerTip();
         }
 
-        //todo 誰か一人でもプレイヤーのチップ数が 0 以下になった場合、プレーヤーの得点をソートして大きい順に並べ、プレーヤー名と合わせて表示する。
+        //todo 誰か一人でもプレイヤーのチップ数が 0 以下になった場合、プレーヤーの得点をソートして大きい順に並べ、プレーヤー名と合わせて勝者を表示する。
+        for (Player player : players) {
+            if (player.getPlayerScore() <= 0) {
+
+            }
+        }
 
         // todo プレーヤーが次のラウンドに参加するように初期化する
+        InitializeInstanceField();
+
+
+        showPressEnter();
+
+    }
+
+    private void InitializeInstanceField() {
         for (Player player : players) {
             player.setOnField(true);
         }
-
     }
 
 

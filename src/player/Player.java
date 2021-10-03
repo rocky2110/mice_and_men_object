@@ -80,4 +80,16 @@ public abstract class Player {
     public void showPlayerTip() {
         System.out.println(playerName + "  →  " + playerTip + "枚");
     }
+
+    public int getPlayerScore() {
+        String firstDiceNumber = String.valueOf(this.firstDiceNumber);
+        String secondDiceNumber = String.valueOf(this.secondDiceNumber);
+        String thirdDiceNumber = String.valueOf(this.thirdDiceNumber);
+        String playerStringScore = firstDiceNumber + secondDiceNumber + thirdDiceNumber;
+        return Integer.parseInt(playerStringScore);
+    }
+
+    public void addTip(int tip) {
+        playerTip += tip;
+    }
 }
