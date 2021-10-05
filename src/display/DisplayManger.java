@@ -124,4 +124,20 @@ public class DisplayManger implements MessageConstraint {
     public void showPlayerScore(String playerName, int playerScore) {
         System.out.println(playerName + "得点 -> " + playerScore);
     }
+
+    public void showChampionThisGame(String championName) {
+        System.out.println("優勝は" + championName + "です！！");
+    }
+
+    public void showGameFinishedResult(int counter, String playerName, Integer playerTip) {
+        System.out.println(counter + "位  " + playerName + " " + playerTip + "枚");
+    }
+
+    public void showGameOver() {
+        System.out.println("********** GAME OVER **********");
+    }
+
+    public void showChampionThisGameDecoration() {
+        System.out.println("*******************************");
+    }
 }

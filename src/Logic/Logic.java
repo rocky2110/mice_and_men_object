@@ -16,7 +16,7 @@ public class Logic extends BaseLogic implements MessageConstraint {
     private int playerNumber;
     private ArrayList<Player> players = new ArrayList();
     private int counter = 0;
-    private boolean gameNotContinued = false;
+    private boolean gameContinued = false;
     private int tip = 1;
 
     private String playerNameYou = PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.you");
@@ -100,13 +100,9 @@ public class Logic extends BaseLogic implements MessageConstraint {
                     displayManger.showPlayerSelectStrategyOne();
                     player.subtractionTip(1);
                     player.setOnField(false);
-                }
-
-                else if (player.getPlayerStrategy() == player.strategyTwo) {
+                } else if (player.getPlayerStrategy() == player.strategyTwo) {
                     displayManger.showPlayerSelectStrategyTwo();
-                }
-
-                else if (player.getPlayerStrategy() == player.strategyThree) {
+                } else if (player.getPlayerStrategy() == player.strategyThree) {
                     displayManger.showPlayerSelectStrategyThree();
                     tip++;
                     displayManger.showLoserLoseTipNumber(tip);
@@ -148,7 +144,7 @@ public class Logic extends BaseLogic implements MessageConstraint {
             displayManger.showChampionThisRound(counter, list.get(list.size() - 1).getKey().getPlayerName());
             list.get(list.size() - 1).getKey().addTip(tip);
             // 負けたプレーヤーは 負けた時に失うチップ枚数分チップ数が減る。
-            for (int i = 0 ; i < list.size() - 1 ; i++) {
+            for (int i = 0; i < list.size() - 1; i++) {
                 list.get(i).getKey().subtractionTip(tip);
             }
         }
@@ -158,19 +154,46 @@ public class Logic extends BaseLogic implements MessageConstraint {
             player.showPlayerTip();
         }
 
+
         //todo 誰か一人でもプレイヤーのチップ数が 0 以下になった場合、プレーヤーの得点をソートして大きい順に並べ、プレーヤー名と合わせて勝者を表示する。
         for (Player player : players) {
-            if (player.getPlayerScore() <= 0) {
+            if (player.getPlayerTip() <= 0) {
+                // この時点でユーザーの得点を、ユーザー名と一緒に HashMap に保存する。
+                HashMap<String, Integer> rankingTable = new HashMap<>();
+                for (Player player1 : players) {
+                    rankingTable.put(player1.getPlayerName(), player1.getPlayerTip());
+                }
+                // hashmap の得点順にそーとする
+                List<Map.Entry<String, Integer>> list = new ArrayList<>(rankingTable.entrySet());
+                list.sort(Map.Entry.comparingByValue());
 
+                showPressEnter();
+                // ゲームオーバーを出力する
+                displayManger.showGameOver();
+
+                // 優勝者を出力する
+                displayManger.showChampionThisGame(list.get(list.size() - 1).getKey());
+
+                // ソートした結果。順位、プレーヤー名、チップの数を出力する。
+                int counter = 1;
+                for (int i = list.size() - 1; 0 <= i; i--) {
+                    displayManger.showGameFinishedResult(counter, list.get(i).getKey(), list.get(i).getValue());
+                    counter = counter + 1;
+                }
+
+                // 飾り文字を出力する
+                displayManger.showChampionThisGameDecoration();
+
+                // ゲームのループを止めるため、フラグを切り替える。
+                gameContinued = true;
+
+                // このループを抜ける
+                break;
             }
         }
 
-        // todo プレーヤーが次のラウンドに参加するように初期化する
         InitializeInstanceField();
-
-
         showPressEnter();
-
     }
 
     private void InitializeInstanceField() {
@@ -187,7 +210,7 @@ public class Logic extends BaseLogic implements MessageConstraint {
 
     @Override
     boolean isEnd() {
-        return gameNotContinued;
+        return gameContinued;
     }
 
     public void showPressEnter() {
