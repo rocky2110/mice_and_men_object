@@ -43,9 +43,9 @@ public abstract class Player {
     }
 
     public void throwThreeDice() {
-        firstDiceNumber = rand.nextInt(6) + 1;
-        secondDiceNumber = rand.nextInt(6) + 1;
-        thirdDiceNumber = rand.nextInt(6) + 1;
+        firstDiceNumber = rand.nextInt(PropertiesUtil.getValueInt(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "dice.max.number")) + 1;
+        secondDiceNumber = rand.nextInt(PropertiesUtil.getValueInt(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "dice.max.number")) + 1;
+        thirdDiceNumber = rand.nextInt(PropertiesUtil.getValueInt(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "dice.max.number")) + 1;
     }
 
     public int getPlayerTip() {

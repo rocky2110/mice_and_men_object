@@ -1,32 +1,29 @@
 package display;
 
-import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import constraint.MessageConstraint;
 import util.PropertiesUtil;
-
-import static util.PropertiesUtil.getValueString;
 
 public class DisplayManger implements MessageConstraint {
 
 
     public void showGameTitle() {
-        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.game.title"));
+        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.game.title.art"));
     }
 
     public void showGameRuleSummary() {
-        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.beginning.summary"));
+        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.game.beginning.summary"));
     }
 
     public void askPlayerNumber() {
-        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.beginning.ask.player.number"));
+        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.game.beginning.ask.player.number"));
     }
 
-    public void alertPlayersNumber() {
-        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.beginning.error.input.player.number"));
+    public void alertInputPlayersNumber() {
+        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.game.beginning.error.input.player.number"));
     }
 
     public void startGame() {
-        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.start.game"));
+        System.out.println(PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.game.title.text"));
     }
 
     public void showGameRound(int counter) {

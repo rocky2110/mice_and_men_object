@@ -9,12 +9,9 @@ public abstract class BaseLogic {
         do {
             processLoop();
         } while (!isEnd());
-        finish();
     }
 
     abstract void processLoop();
-
-    abstract void finish();
 
     abstract boolean isEnd();
 }
