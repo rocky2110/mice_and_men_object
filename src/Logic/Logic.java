@@ -3,8 +3,8 @@ package Logic;
 import constraint.MessageConstraint;
 import display.DisplayManger;
 import player.Player;
-import player.PlayerComputer;
-import player.PlayerYou;
+import player.ComputerPlayer;
+import player.HumanPlayer;
 import util.PropertiesUtil;
 
 import java.util.*;
@@ -18,7 +18,7 @@ public class Logic extends BaseLogic implements MessageConstraint {
     private boolean gameContinued = false;
     private int tip = 1;
 
-    private String playerNameYou = PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.you");
+    private String playerNameYou = PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.human");
     private String playerNameComputer = PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.player.name.computer");
 
     public Logic() {
@@ -38,6 +38,11 @@ public class Logic extends BaseLogic implements MessageConstraint {
         showPressEnter();
     }
 
+    /**
+     * プレイヤーの名称とターンの順番を出力する
+     *
+     * @param playerNumber
+     */
     private void showPlayersOrder(int playerNumber) {
         for (int i = 0; i < playerNumber; i++) {
             int order = i + 1;
@@ -45,6 +50,11 @@ public class Logic extends BaseLogic implements MessageConstraint {
         }
     }
 
+    /**
+     * プレイヤーの数を入力させて取得する
+     *
+     * @return
+     */
     private int getPlayerNumber() {
         int playerNumber = 0;
         do {
@@ -63,20 +73,24 @@ public class Logic extends BaseLogic implements MessageConstraint {
         return playerNumber;
     }
 
+    /**
+     * プレイヤーのインスタンスを作成
+     *
+     * @param playerNumber
+     */
     private void createPlayers(int playerNumber) {
         for (int i = 0; i < playerNumber; i++) {
             if (i == playerNumber - 1) {
                 String playerName = playerNameYou;
-                PlayerYou player = new PlayerYou(playerName, displayManger, scan);
+                HumanPlayer player = new HumanPlayer(playerName, displayManger, scan);
                 players.add(player);
             } else {
                 String playerName = playerNameComputer + (i + 1);
-                PlayerComputer computerPlayer = new PlayerComputer(playerName, displayManger, scan);
+                ComputerPlayer computerPlayer = new ComputerPlayer(playerName, displayManger, scan);
                 players.add(computerPlayer);
             }
         }
     }
-
 
     @Override
     void processLoop() {
@@ -84,7 +98,7 @@ public class Logic extends BaseLogic implements MessageConstraint {
         showPlayerThreeDiceNumber();
         letPlayerChooseStrategy();
         ArrayList<Player> playersOnField = playersOnFieldList();
-        showWinningPlayer(playersOnField);
+        showWinningPlayerInThisRound(playersOnField);
 
         showPlayerTips();
 
@@ -103,34 +117,35 @@ public class Logic extends BaseLogic implements MessageConstraint {
         gameContinued = true;
     }
 
+    /**
+     * プレイヤーをチップ毎に並び替え、順位をつける
+     */
     private void decideAndShowWinningPlayer() {
-        // この時点でユーザーの得点を、ユーザー名と一緒に HashMap に保存する。
-        HashMap<String, Integer> rankingTable = new HashMap<>();
-        for (Player player1 : players) {
-            rankingTable.put(player1.getPlayerName(), player1.getPlayerTip());
+        HashMap<String, Integer> playerRankingTable = new HashMap<>();
+        for (Player player : players) {
+            playerRankingTable.put(player.getPlayerName(), player.getPlayerTip());
         }
-        // hashmap の得点順にそーとする
-        List<Map.Entry<String, Integer>> list = new ArrayList<>(rankingTable.entrySet());
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(playerRankingTable.entrySet());
         list.sort(Map.Entry.comparingByValue());
 
-        showPressEnter();
-        // ゲームオーバーを出力する
         displayManger.showGameOver();
 
-        // 優勝者を出力する
         displayManger.showChampionThisGame(list.get(list.size() - 1).getKey());
 
-        // ソートした結果。順位、プレーヤー名、チップの数を出力する。
         int counter = 1;
         for (int i = list.size() - 1; 0 <= i; i--) {
             displayManger.showGameFinishedResult(counter, list.get(i).getKey(), list.get(i).getValue());
             counter = counter + 1;
         }
 
-        // 飾り文字を出力する
         displayManger.showChampionThisGameDecoration();
     }
 
+    /**
+     * プレイヤーの中で、チップの数が0以下になっているプレイヤーがいれば true を返す
+     *
+     * @return
+     */
     private boolean checkPlayerTipsLowerThanZero() {
         boolean isPlayerTipLowerThanZero = false;
         for (Player player : players) {
@@ -159,27 +174,21 @@ public class Logic extends BaseLogic implements MessageConstraint {
      *
      * @param playersOnField
      */
-    private void showWinningPlayer(ArrayList<Player> playersOnField) {
+    private void showWinningPlayerInThisRound(ArrayList<Player> playersOnField) {
         HashMap<Player, Integer> playersScoreMap = new HashMap<>();
-        // ラウンドに残っているプレーヤーが 1 人だったら、その人が勝者になる。
         if (playersOnField.size() == 1) {
             displayManger.showChampionThisRound(counter, playersOnField.get(0).getPlayerName());
             playersOnField.get(0).addTip(tip);
         } else if (playersOnField.size() >= 2) {
-            // ラウンドに残っているプレーヤーが 2 人以上だったら、3桁の数字にし、比較して勝者を決定する
-            // それぞれのプレーヤーの3桁の数字を int にして得点とする
             for (Player player : playersOnField) {
-                // プレーヤのインスタンスと得点を Hashmap にぶち込んでおく。
                 int playerScore = player.getPlayerScore();
                 playersScoreMap.put(player, playerScore);
                 displayManger.showPlayerScore(player.getPlayerName(), playerScore);
             }
-            // hash map の int playerScore で昇順にソートして、1番上にいるプレーヤー名を出力して勝者とする。
             List<Map.Entry<Player, Integer>> list = new ArrayList<>(playersScoreMap.entrySet());
             list.sort(Map.Entry.comparingByValue());
             displayManger.showChampionThisRound(counter, list.get(list.size() - 1).getKey().getPlayerName());
             list.get(list.size() - 1).getKey().addTip(tip);
-            // 負けたプレーヤーは 負けた時に失うチップ枚数分チップ数が減る。
             for (int i = 0; i < list.size() - 1; i++) {
                 list.get(i).getKey().subtractionTip(tip);
             }
@@ -203,19 +212,26 @@ public class Logic extends BaseLogic implements MessageConstraint {
         return playersOnField;
     }
 
+    /**
+     * プレイヤーに戦略を選択させる。
+     * strategyOne を選択した場合は、持ちチップ数を 1 減らしてフィールドから降りる
+     * strategyTwo を選択した場合は、何もしない
+     * strategyThree を選択した場合は、負けたときに失うチップ数を無条件で 1 増やす。そして他のプレイヤーにフィールドに残るか去るかを選択させる。
+     */
     private void letPlayerChooseStrategy() {
+        showPressEnter();
         for (Player player : players) {
+            displayManger.showLoserLoseTipNumber(tip);
             if (player.isOnField()) {
-                if (player instanceof PlayerYou) {
+                if (player instanceof HumanPlayer) {
                     displayManger.askWhichStrategyChoose();
                     displayManger.showStrategyOption();
                     player.selectStrategy();
-                } else if (player instanceof PlayerComputer) {
+                    displayManger.showPlayerDeclare(player.getPlayerName());
+                } else if (player instanceof ComputerPlayer) {
                     player.selectStrategy();
+                    displayManger.showPlayerDeclare(player.getPlayerName());
                 }
-                showPressEnter();
-                displayManger.showPlayerDeclare(player.getPlayerName());
-                displayManger.showLoserLoseTipNumber(tip);
 
                 if (player.getPlayerStrategy() == player.strategyOne) {
                     displayManger.showPlayerSelectStrategyOne();
@@ -226,14 +242,14 @@ public class Logic extends BaseLogic implements MessageConstraint {
                 } else if (player.getPlayerStrategy() == player.strategyThree) {
                     displayManger.showPlayerSelectStrategyThree();
                     tip++;
-                    displayManger.showLoserLoseTipNumber(tip);
                     for (Player reLoopPlayer : players) {
                         if (reLoopPlayer.isOnField() && !(player == reLoopPlayer)) {
-                            reLoopPlayer.decideRemainInPlay();
+                            reLoopPlayer.decideRemainOnField();
                         }
                     }
                 }
             }
+            showPressEnter();
         }
     }
 
@@ -245,9 +261,9 @@ public class Logic extends BaseLogic implements MessageConstraint {
         for (Player player : players) {
             player.throwThreeDice();
             displayManger.showDiceThrowed(player.getPlayerName());
-            if (player instanceof PlayerComputer) {
-                ((PlayerComputer) player).showComputerPlayerSecretDiceNumber();
-            } else if (player instanceof PlayerYou) {
+            if (player instanceof ComputerPlayer) {
+                ((ComputerPlayer) player).showComputerPlayerSecretDiceNumber();
+            } else if (player instanceof HumanPlayer) {
                 player.showPlayerDiceNumber();
             }
         }
@@ -261,6 +277,9 @@ public class Logic extends BaseLogic implements MessageConstraint {
         displayManger.showGameRound(counter);
     }
 
+    /**
+     * プレイヤーのフィールドにいるフラグを true に初期化する
+     */
     private void InitializeInstanceField() {
         for (Player player : players) {
             player.setOnField(true);

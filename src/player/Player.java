@@ -32,7 +32,7 @@ public abstract class Player {
     }
 
     public abstract void selectStrategy();
-    public abstract void decideRemainInPlay();
+    public abstract void decideRemainOnField();
 
     public String getPlayerName() {
         return playerName;

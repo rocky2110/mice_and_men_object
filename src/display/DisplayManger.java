@@ -38,14 +38,14 @@ public class DisplayManger implements MessageConstraint {
         System.out.println(
                 PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.star")
                 + playerName
-                + PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.user.declared")
+                + PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.player.declared")
                 + PropertiesUtil.getValueString(PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.star")
         );
     }
 
 
     public void showComputerStrategyNumberError() {
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.number.error"));
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.strategy.number.error"));
     }
 
     public void askWhichStrategyChoose() {
@@ -53,13 +53,14 @@ public class DisplayManger implements MessageConstraint {
     }
 
     public void showStrategyOption() {
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.one.rule"));
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.two.rule"));
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "strategy.three.rule"));
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.strategy.option.one"));
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.strategy.strategy.two"));
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.strategy.option.three"));
     }
 
     public void showPressEnter() {
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.on.play.press.enter"));
+        System.out.println("");
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.ask.press.enter"));
     }
 
     public void showNoSuchStrategy() {
@@ -68,41 +69,41 @@ public class DisplayManger implements MessageConstraint {
 
     public void showPlayerOrder(int order, String playerName) {
         System.out.println(order
-                + PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.order")
+                + PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.show.player.order")
                 + playerName);
     }
 
     public void showPlayerSelectStrategyOne() {
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "result.strategy.one"));
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.result.strategy.one"));
     }
 
     public void showPlayerSelectStrategyTwo() {
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "result.strategy.two"));
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.result.strategy.two"));
     }
 
     public void showPlayerSelectStrategyThree() {
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "result.strategy.three"));
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.result.strategy.three"));
     }
 
     public void showLoserLoseTipNumber(int tip) {
-        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.loser.lost.tip.number"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.loser.lost.tip.number"));
         System.out.print(tip);
-        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.loser.lost.tip.number.end.of.line"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.loser.lost.tip.number.end.of.line"));
     }
 
     public void showDecideRemainInPlay(String playerName) {
-        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play.decoration"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.decide.remain.on.field.decoration"));
         System.out.print(playerName);
-        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play"));
-        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play.decoration"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.decide.remain.on.field"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.decide.remain.on.field.decoration"));
         System.out.println("");
     }
 
     public void showDecideNotRemainInPlay(String playerName) {
-        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play.decoration"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.decide.remain.on.field.decoration"));
         System.out.print(playerName);
-        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.not.remain.in.play"));
-        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "show.decide.remain.in.play.decoration"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.decide.not.remain.in.play"));
+        System.out.print(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.decide.remain.on.field.decoration"));
         System.out.println("");
     }
 
@@ -111,7 +112,8 @@ public class DisplayManger implements MessageConstraint {
     }
 
     public void askRemainInPlay() {
-        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "mag.ask.input"));
+        System.out.println("");
+        System.out.println(PropertiesUtil.getValueString(MessageConstraint.PROPERTIES_FILE_NAME_MICE_AND_MEN, "msg.ask.player.input.yes.or.no"));
     }
 
     public void showChampionThisRound(int counter, String playerName) {
